@@ -14,7 +14,9 @@ Docker verification executes HTTP/session/snapshot/JetKVM integration tests insi
 
 AMT login/status, KVM frames and SOL setup were exercised on a limited development set. JetKVM firmware **0.5.3** was exercised for login, live H.264 video at 1920 × 1080, media/extension status, and upload/delete of an isolated small test file. Device identities and captures from that environment are deliberately not published.
 
-Physical ATX Power/Reset and real target mounting/booting were **not** exercised for this release. The real JetKVM had no ATX extension selected. Other JetKVM firmware versions, browsers, GPU combinations and networks may behave differently. A supported-looking UI control is not evidence that a particular device has the necessary hardware or permissions.
+On 5 November 2026, an AMT media compatibility build booted `ubuntu-26.04.1-live-server-amd64.iso` to the installer language selection on a **MS-02 Ultra, BIOS 1.04, AMT 19.0.5**, served by an ARM64 teamserver. The image SHA-256 matched Ubuntu's published checksum. The test used the empty USB-R companion drive and the temporary GRUB parameter `pcie_port_pm=off` to avoid a separate PCIe error storm; see the [FAQ](FAQ.md#ms-02-ultra-repeated-pcie-acsaer-errors-during-linux-boot). No installation or partitioning was performed. This validates that combination, not an entire installation or other firmware/image combinations. KVM sometimes required reconnecting after `ECONNRESET`; the media fix does not claim to resolve that separate symptom.
+
+Physical **JetKVM** ATX Power/Reset and real JetKVM target mounting/booting were **not** exercised. The real JetKVM had no ATX extension selected. Other JetKVM firmware versions, browsers, GPU combinations and networks may behave differently. A supported-looking UI control is not evidence that a particular device has the necessary hardware or permissions.
 
 ## Screenshot provenance
 
