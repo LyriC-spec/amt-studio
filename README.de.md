@@ -2,7 +2,7 @@
 
 **Intel AMT und JetKVM gemeinsam im eigenen Browser-Workspace.**
 
-[English](README.md) · [Docker-Anleitung](docs/INSTALL.md) · [FAQ auf Deutsch](docs/FAQ.de.md) · [Sicherheit](SECURITY.md)
+[English](README.md) · [Docker-Anleitung](docs/INSTALL.md) · [Update-Anleitung](UPDATE.md) · [FAQ auf Deutsch](docs/FAQ.de.md) · [Sicherheit](SECURITY.md)
 
 AMT Studio verwaltet Geräte und Gruppen, öffnet KVM-/SOL-Konsolen und stellt virtuelle Medien bereit. Der Teamserver läuft als Linux-Docker-Container auf **ARM64 und AMD64/x86-64**. Bedient wird er im Browser unter Windows, macOS oder Linux. Die Oberfläche ist derzeit deutschsprachig.
 

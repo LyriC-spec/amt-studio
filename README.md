@@ -2,7 +2,7 @@
 
 **Intel AMT and JetKVM, together in a self-hosted browser workspace.**
 
-[Deutsch](README.de.md) · [Docker installation](docs/INSTALL.md) · [FAQ](docs/FAQ.md) · [Security](SECURITY.md) · [Contributing](CONTRIBUTING.md)
+[Deutsch](README.de.md) · [Docker installation](docs/INSTALL.md) · [Update guide (Deutsch)](UPDATE.md) · [FAQ](docs/FAQ.md) · [Security](SECURITY.md) · [Contributing](CONTRIBUTING.md)
 
 Manage devices, open remote consoles and share access with your team. AMT Studio runs as a Linux Docker container on **AMD64/x86-64 and ARM64**, with a browser on Windows, macOS or Linux. The interface currently uses **German labels**.
 
