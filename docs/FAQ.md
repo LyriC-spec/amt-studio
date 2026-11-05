@@ -38,6 +38,26 @@ It enables compatibility with older AMT firmware lacking secure-renegotiation su
 
 The browser must reach the JetKVM directly over WebRTC, as well as reach AMT Studio. Check routing, VPN and firewall rules on both paths, and whether another client holds the device session. AMT Studio does not provide a TURN relay. Also check the HDMI input and target computer's video output.
 
+## Why does an AMT installation fail to boot from an image?
+
+Uploading alone does not activate redirection or select the boot source. Connect the ISO from **Medien**, keep that session open throughout installation, and select the one-time CD/DVD media boot in the AMT tools. The next-boot activation option waits for the next boot; it does not restart the target.
+
+Check the image SHA-256 against its publisher's checksum. For an error such as “USB3 failed”, capture the exact text and boot stage, AMT/BIOS version, image filename, and any `mediaProtocol` activity entries. Those entries record the firmware error code, last SCSI opcode and bytes read. The message alone does not establish a USB 3 hardware defect. Remove device addresses and usernames before filing a public issue.
+
+For ISO images, **USB-R-Kompatibilität für Linux** supplies an additional empty, read-only 1.44 MB virtual floppy. Some AMT USB-R firmware repeatedly resets its storage devices when Linux probes the unused floppy with no medium present. The compatibility drive is generated in memory: it contains no host files, has no filesystem or installer, and rejects writes. The browser enables this option by default for ISO connections; it can be unchecked. IMG connections continue to expose the selected IMG file. Media sessions also send protocol keepalives during read pauses.
+
+### MS-02 Ultra: repeated PCIe ACS/AER errors during Linux boot
+
+This is separate from USB storage probing. A [hardware investigation](https://github.com/kasa-consulting/kasa-testing-public/blob/main/hardware/ms-02-ultra/thunderbolt5/2026-09-09/upstream-comment.md) reproduced a runtime power-management problem at root port `0000:80:1b.4` on the MS-02 Ultra. If the same port and error pattern appear, a diagnostic boot with `pcie_port_pm=off` can help isolate it.
+
+In GRUB, select the Ubuntu entry and press **e**. Add `pcie_port_pm=off` to the `linux` line before `---`, then press **F10** to boot. Use **Englisch · US** in the KVM keyboard selector while editing a US-layout bootloader. This change applies only to that boot; AMT Studio does not modify the ISO, firmware or installed system. The parameter disables runtime power management for all PCIe ports for that boot, so it is a workaround with a power-use tradeoff, not a firmware repair. See the [kernel parameter reference](https://www.kernel.org/doc/html/latest/admin-guide/kernel-parameters.html).
+
+## KVM disconnected, but reconnect says a session is already active
+
+Version 0.3.1 waits for the old KVM session to stop before opening its replacement, including color-depth changes. The teamserver also checks WebSocket PONG replies: a browser connection that stops answering is terminated and its redirections are released within approximately 30–60 seconds. Other healthy tabs are not disconnected. This also ends virtual media owned by the lost connection, so keep the browser connected during an ISO boot.
+
+After a network interruption, reconnect the workspace using the connection banner, then reopen KVM. If a session is still listed, open **Medien → Aktive Umleitungen** and disconnect the affected KVM entry before retrying. Users can end their own sessions; administrators can also end another user's session. Check who is using it first. AMT can also report a session held by another application, which AMT Studio cannot release through its own session list. These changes do not guarantee that firmware or network resets themselves disappear.
+
 ## How do virtual media work?
 
 AMT images live in the teamserver's **Medien** library and are served read-only via storage redirection. JetKVM has its own **Medien** panel in the console: upload to its storage, select an existing file, or provide an HTTP/HTTPS URL. URL sources must support HTTP Range requests and be reachable from JetKVM. See the [official JetKVM media guide](https://jetkvm.com/docs/peripheral-devices/mount-drive).

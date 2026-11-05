@@ -8,7 +8,7 @@ Manage devices, open remote consoles and share access with your team. AMT Studio
 
 ![AMT Studio in the Orbit dark design, showing fictional devices](docs/images/orbit-dark.png)
 
-> Early community release, version 0.3.0. Use on a trusted management network or VPN. Hardware support depends on device firmware and provisioning. This is an independent project, not affiliated with Intel or JetKVM.
+> Early community release, version 0.3.1. Use on a trusted management network or VPN. Hardware support depends on device firmware and provisioning. This is an independent project, not affiliated with Intel or JetKVM.
 
 ## What it does
 

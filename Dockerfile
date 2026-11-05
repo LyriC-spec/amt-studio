@@ -27,9 +27,10 @@ COPY tests/browser.test.cjs ./tests/browser.test.cjs
 COPY tests/snapshot.test.cjs ./tests/snapshot.test.cjs
 COPY tests/jetkvm.test.cjs ./tests/jetkvm.test.cjs
 COPY tests/jetkvm-tools.test.cjs ./tests/jetkvm-tools.test.cjs
+COPY tests/media-compat.test.cjs tests/redirection-extra.test.cjs ./tests/
 COPY src/jetkvm-input.mjs src/kvm-keyboard.mjs src/jetkvm-rpc.mjs ./src/
-RUN node --test tests/browser.test.cjs tests/snapshot.test.cjs tests/jetkvm.test.cjs tests/jetkvm-tools.test.cjs \
-    && node -e "require('fs').writeFileSync('/tmp/build-verification.json', JSON.stringify({platform:process.platform,architecture:process.arch,node:process.version,browserTestsPassed:2,snapshotTestsPassed:2,jetkvmTestsPassed:4,jetkvmToolsTestsPassed:3}))"
+RUN node --test tests/browser.test.cjs tests/snapshot.test.cjs tests/jetkvm.test.cjs tests/jetkvm-tools.test.cjs tests/media-compat.test.cjs tests/redirection-extra.test.cjs \
+    && node -e "require('fs').writeFileSync('/tmp/build-verification.json', JSON.stringify({platform:process.platform,architecture:process.arch,node:process.version,browserTestsPassed:3,snapshotTestsPassed:2,jetkvmTestsPassed:4,jetkvmToolsTestsPassed:3,mediaAndRedirectionTestsPassed:17}))"
 
 FROM runtime AS release
 COPY --from=verify /tmp/build-verification.json /app/build-verification.json

@@ -61,12 +61,12 @@ The [GitHub releases](https://github.com/LyriC-spec/amt-studio/releases) provide
 For example, after downloading the AMD64 archive and checksum into the project directory:
 
 ```sh
-sha256sum -c amt-studio-0.3.0-linux-amd64.tar.gz.sha256
-docker load -i amt-studio-0.3.0-linux-amd64.tar.gz
+sha256sum -c amt-studio-0.3.1-linux-amd64.tar.gz.sha256
+docker load -i amt-studio-0.3.1-linux-amd64.tar.gz
 docker compose up -d --no-build --pull never
 ```
 
-For ARM64 use the `linux-arm64` files. On PowerShell, compare `Get-FileHash -Algorithm SHA256` with the checksum file instead of `sha256sum`. Prepare TLS before starting Compose. The archive loads `amt-studio-web:0.3.0`, matching the default Compose image. `AMT_IMAGE` can override the image name when using your own registry.
+For ARM64 use the `linux-arm64` files. On PowerShell, compare `Get-FileHash -Algorithm SHA256` with the checksum file instead of `sha256sum`. Prepare TLS before starting Compose. The archive loads `amt-studio-web:0.3.1`, matching the default Compose image. `AMT_IMAGE` can override the image name when using your own registry.
 
 To build both architectures yourself, use `docker buildx bake`; the builder needs native workers for both platforms or QEMU emulation. Add an appropriate image tag and `--push` only when publishing to your own registry.
 

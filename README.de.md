@@ -8,7 +8,7 @@ AMT Studio verwaltet Geräte und Gruppen, öffnet KVM-/SOL-Konsolen und stellt v
 
 ![Orbit mit frei erfundenen Geräten](docs/images/orbit-dark.png)
 
-Dies ist eine frühe Community-Version (0.3.0) für ein vertrauenswürdiges Verwaltungsnetz oder VPN. Funktionsumfang und Verfügbarkeit hängen von Firmware, Verkabelung und Geräteeinstellungen ab. Das Projekt ist unabhängig von Intel und JetKVM.
+Dies ist eine frühe Community-Version (0.3.1) für ein vertrauenswürdiges Verwaltungsnetz oder VPN. Funktionsumfang und Verfügbarkeit hängen von Firmware, Verkabelung und Geräteeinstellungen ab. Das Projekt ist unabhängig von Intel und JetKVM.
 
 ## Funktionen
 

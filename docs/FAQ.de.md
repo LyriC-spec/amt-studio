@@ -26,6 +26,12 @@ AMT-Geräte verwenden häufig eigene Zertifikate. Den SHA-256-Fingerabdruck mit 
 
 Der Browser muss JetKVM direkt über WebRTC erreichen können. Eine erreichbare AMT-Studio-Webseite allein reicht nicht. Routing, VPN, Firewall, eine eventuell bereits belegte Sitzung und HDMI-Ausgabe prüfen. Ein TURN-Relay ist nicht enthalten.
 
+## Warum startet eine AMT-Installation nicht vom Image?
+
+Das Hochladen allein aktiviert weder die Medienumleitung noch den Start vom Image. Verbinde das ISO in **Medien**, halte die Sitzung während der Installation offen und wähle in den AMT-Werkzeugen den einmaligen Medienstart als CD/DVD. „Beim nächsten Start“ stellt das Medium erst beim nächsten Boot bereit; es startet den Rechner nicht neu.
+
+Prüfe die SHA-256-Prüfsumme gegen die Veröffentlichung des Image-Anbieters. Bei „USB3 failed“ helfen der genaue Meldungstext, die Stelle im Bootablauf, AMT-/BIOS-Version, der Image-Dateiname und Einträge vom Typ `mediaProtocol` im Aktivitätsprotokoll. Diese enthalten Firmware-Fehlercode, letzten SCSI-Befehl und gelesene Bytezahl. Die Meldung allein beweist keinen USB-3-Hardwarefehler. Entferne Geräteadressen und Benutzernamen vor einem öffentlichen Fehlerbericht.
+
 ## Wo sind die Medien für JetKVM?
 
 In der JetKVM-Konsole auf **Medien** klicken. Dort lassen sich ISO-/IMG-Dateien hochladen, vorhandene Dateien verbinden oder direkte HTTP-/HTTPS-URLs nutzen. Der URL-Server muss Range-Anfragen unterstützen und vom JetKVM erreichbar sein. Die Bibliothek in der Seitennavigation ist dagegen für Intel AMT.
