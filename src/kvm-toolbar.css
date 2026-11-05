@@ -1,0 +1,7 @@
+.amt-panel .compact-toolbar {flex-wrap:wrap;gap:8px 16px;padding:9px 13px;flex-shrink:0}
+.amt-panel .console-identity {flex-wrap:wrap;gap:8px;min-width:0}
+.amt-panel .console-controls {margin-left:auto;flex-wrap:wrap;gap:6px;min-width:0}
+.amt-panel .console-controls .keyboard-select {display:flex;align-items:center;gap:6px;margin:0;color:var(--muted)}
+.amt-panel .console-controls select {width:158px;max-width:100%;min-height:32px;padding:5px 8px;border:1px solid var(--border);border-radius:7px;background:var(--panel);color:var(--text);font-size:11px}
+.amt-panel .console-controls .quality-select {width:128px}
+.amt-panel .compact-toolbar button {min-height:32px;white-space:nowrap}

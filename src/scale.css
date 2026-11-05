@@ -1,0 +1,19 @@
+/* Very narrow content widths can also occur on phones at 150% scale. */
+@media(max-width:360px){
+ :root[data-design=serein],:root[data-design=orbit]{--sidebar-width:0px}
+ [data-design=serein] .app-shell,[data-design=orbit] .app-shell{display:block}
+ [data-design=serein] .app-shell>.sidebar,[data-design=orbit] .app-shell>.sidebar{position:sticky;top:0;width:100%;height:auto;padding:8px;display:flex;flex-direction:row;align-items:center;gap:8px;z-index:30}
+ [data-design=serein] .sidebar .brand,[data-design=orbit] .sidebar .brand,[data-design=serein] .sidebar-bottom,[data-design=orbit] .sidebar-bottom{display:none}
+ [data-design=serein] .sidebar nav,[data-design=orbit] .sidebar nav{display:flex;flex-direction:row;overflow-x:auto;width:100%;min-width:0;gap:4px;margin:0}
+ [data-design=serein] .sidebar nav button,[data-design=orbit] .sidebar nav button{flex:0 0 58px;min-height:48px;padding:6px 4px;gap:5px;font-size:7px}
+ [data-design=serein] .app-shell>main,[data-design=orbit] .app-shell>main{margin-left:0;width:100%}
+ .topbar .breadcrumb{display:none}.topbar-right{margin-left:auto}
+ .settings-card{padding:18px}.design-card{grid-template-columns:1fr!important}
+ .appearance-heading{flex-wrap:wrap}.mode-switch{flex-shrink:0}
+ .detail-actions{flex-wrap:wrap}.detail-actions .button{flex:1 1 85px}
+ .device-modal .form-columns{grid-template-columns:1fr}
+ .modal-actions{flex-wrap:wrap}
+ .section-toolbar{align-items:flex-start}.section-toolbar .tabs{min-width:0;flex-wrap:wrap}
+ .metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.metric{min-width:0}
+ [data-design=luma] .metric{min-width:0}.metric>span{overflow-wrap:anywhere}
+}

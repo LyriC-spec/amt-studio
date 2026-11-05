@@ -1,0 +1,12 @@
+const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),os=require('node:os'),path=require('node:path'),https=require('node:https'),{once}=require('node:events'),{execFileSync}=require('node:child_process'),{X509Certificate}=require('node:crypto'),{WebSocketServer}=require('ws');
+const {JetClient,JetSession}=require('../electron/jetkvm.cjs');
+test('JetKVM HTTPS checks trust before sending passwords or WebSocket cookies',async t=>{
+ const dir=fs.mkdtempSync(path.join(os.tmpdir(),'amt-jet-tls-')),key=path.join(dir,'key.pem'),cert=path.join(dir,'cert.pem');const openssl=process.platform==='win32'?'C:/Program Files/Git/usr/bin/openssl.exe':'openssl';execFileSync(openssl,['req','-x509','-newkey','rsa:2048','-nodes','-keyout',key,'-out',cert,'-days','2','-subj','/CN=localhost'],{stdio:'ignore',windowsHide:true});
+ let requests=0,upgrades=0;const server=https.createServer({key:fs.readFileSync(key),cert:fs.readFileSync(cert)},(req,res)=>{requests++;res.setHeader('Content-Type','application/json');res.end(JSON.stringify({authMode:'noPassword'}))}),wss=new WebSocketServer({noServer:true}),sockets=new Set();
+ server.on('upgrade',(req,socket,head)=>{upgrades++;assert.equal(req.headers.cookie,'authToken=fixture');wss.handleUpgrade(req,socket,head,ws=>{sockets.add(ws);ws.on('close',()=>sockets.delete(ws));ws.send(JSON.stringify({type:'device-metadata',data:{deviceVersion:'tls-test'}}))})});server.listen(0,'127.0.0.1');await once(server,'listening');
+ t.after(async()=>{for(const s of sockets)s.terminate();wss.close();server.closeAllConnections();await new Promise(r=>server.close(r));fs.rmSync(dir,{recursive:true,force:true})});
+ const device={kind:'jetkvm',host:'127.0.0.1',name:'TLS',jetProtocol:'https',jetPort:server.address().port};
+ await assert.rejects(new JetClient(device,async()=> '').request('/auth/login-local',{password:'never-send'}));
+ await assert.rejects(new JetClient({...device,fingerprint:'ab'.repeat(32)},async()=> '').request('/auth/login-local',{password:'never-send'}),/Zertifikat/);assert.equal(requests,0);assert.equal(upgrades,0);
+ const client=new JetClient({...device,fingerprint:new X509Certificate(fs.readFileSync(cert)).fingerprint256},async()=> '');client.cookie='authToken=fixture';const session=new JetSession(client,()=>{});t.after(()=>session.close());const metadata=once(session,'signal');await session.start();assert.equal((await metadata)[0].type,'device-metadata');assert.equal(upgrades,1);session.close();
+});

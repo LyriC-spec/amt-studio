@@ -1,0 +1,279 @@
+/* Each workspace has its own composition, including on tablet-sized windows. */
+.topbar .breadcrumb{min-width:0;overflow:hidden;white-space:nowrap}
+.topbar .breadcrumb>span{overflow:hidden;text-overflow:ellipsis}
+.topbar-right{flex-shrink:0}
+.device-card-facts,.device-pin-state{color:var(--muted);font-size:11px}
+.device-index{font:11px ui-monospace,monospace;color:var(--subtle)}
+.device-pin-state{display:flex;align-items:center;gap:5px;font:9px ui-monospace,monospace;white-space:nowrap}
+.device-card-facts{display:flex;flex-wrap:wrap;gap:10px 16px}
+.device-card-facts>span{display:flex;align-items:center;gap:6px}
+.device-name{min-width:0}.device-name strong{overflow-wrap:anywhere}
+.snapshot-note{display:flex;gap:9px;align-items:flex-start;margin:18px 0 8px;padding:12px;border:1px solid var(--border);border-radius:10px;color:var(--muted);font-size:11px;line-height:1.65;background:var(--bg)}
+.snapshot-note svg{margin-top:2px;flex-shrink:0}
+.badge.cached{background:var(--bg);color:var(--muted);border-color:var(--border)}
+.detail-status{flex-wrap:wrap;gap:9px}.detail-status>span:last-child{font-size:10px}
+.details-top{flex-wrap:wrap;gap:8px}.details-top>div{margin-left:auto;align-items:center}.details-top .device-edit-button{font-size:11px;letter-spacing:0;padding:7px 9px;gap:6px}
+.device-modal .device-edit-note{padding:12px;border:1px solid var(--border);border-radius:8px;background:var(--accent-dim);color:var(--text);font-size:12px;line-height:1.6}
+
+/* Serein — a soft, spacious desk with an inset navigation and calm device list. */
+[data-design=serein] .sidebar{padding-top:35px}
+[data-design=serein] .sidebar nav button{border-radius:18px}
+[data-design=serein] .sidebar nav button.active{box-shadow:none;background:var(--accent-dim)}
+[data-design=serein] .fleet-page>.page-heading{padding:12px 0 5px}
+[data-design=serein] .fleet-page h1{font-weight:450;letter-spacing:-1.8px}
+[data-design=serein] .metrics{gap:0;border:1px solid var(--border);border-radius:28px;overflow:hidden;background:var(--surface)}
+[data-design=serein] .metric{border:0;border-radius:0;box-shadow:none;background:transparent;padding:23px 26px}
+[data-design=serein] .metric+.metric{border-left:1px solid var(--border)}
+[data-design=serein] .metric:after{display:none}
+[data-design=serein] .metric>strong{font-size:36px}
+[data-design=serein] .device-section{padding:18px 22px;background:var(--surface);border:1px solid var(--border);border-radius:28px}
+[data-design=serein] .device-row{padding:17px 12px;min-height:92px;margin:0;border-radius:18px;background:transparent}
+[data-design=serein] .device-row+.device-row{border-top:1px solid var(--border)}
+[data-design=serein] .device-row.selected{border-color:transparent;background:var(--accent-dim)}
+[data-design=serein] .device-icon{border-radius:50%;width:45px;height:45px;background:var(--bg)}
+[data-design=serein] .connect-small{border-radius:30px;padding:9px 12px}
+[data-design=serein] .search-row{background:var(--bg);border-radius:30px}
+[data-design=serein] .workflow-note{border:0;border-radius:20px;background:var(--bg);margin-top:22px}
+[data-design=serein] .details{border-radius:90px 90px 28px 28px;padding-top:30px;overflow:hidden}
+[data-design=serein] .details-top{padding:0 8px}
+[data-design=serein] .device-illustration{height:180px}
+[data-design=serein] .details .button.primary{border-radius:30px}
+[data-design=serein] .work-card,[data-design=serein] .settings-card{border-radius:28px}
+
+/* Luma — floating navigation, editorial typography and a gallery of devices. */
+[data-design=luma] .app-shell{background:radial-gradient(ellipse at 85% 20%,var(--accent-dim),transparent 58%),var(--bg)}
+[data-design=luma] .fleet-page>.page-heading{align-items:end;padding:20px 0 14px}
+[data-design=luma] .fleet-page h1{font-size:clamp(33px,calc(3.6vw / var(--ui-scale, 1)),54px);font-weight:350;line-height:1.08;max-width:560px;letter-spacing:-2px}
+[data-design=luma] .fleet-page .page-heading .eyebrow{letter-spacing:2.4px;font-size:9px}
+[data-design=luma] .button{border-radius:30px;padding:11px 20px;font-weight:500}
+[data-design=luma] .metrics{display:flex;gap:0;border:0;border-bottom:1px solid var(--border);padding:0 0 23px;margin:0 0 32px;background:transparent;box-shadow:none}
+[data-design=luma] .metric{flex:1;display:flex;flex-direction:column;border:0;border-radius:0;min-height:0;padding:0 24px;background:none;box-shadow:none;overflow:visible}
+[data-design=luma] .metric:first-child{padding-left:0}
+[data-design=luma] .metric+.metric{border-left:1px solid var(--border)}
+[data-design=luma] .metric>strong{order:-1;font-size:36px;line-height:1.3;margin:0 0 7px;font-weight:400}
+[data-design=luma] .metric>.tls-value{font-size:29px;padding-top:8px}
+[data-design=luma] .metric>span{font-size:11px}.metric>span{min-width:0}
+[data-design=luma] .metric>span svg,[data-design=luma] .metric small,[data-design=luma] .metric:after{display:none}
+[data-design=luma] .devices-layout{grid-template-columns:minmax(0,1fr) 300px;gap:28px}
+[data-design=luma] .section-toolbar{border-bottom:0}
+[data-design=luma] .section-toolbar .tabs{gap:4px}
+[data-design=luma] .section-toolbar .tabs button{border:0;border-radius:30px;padding:10px 15px}
+[data-design=luma] .section-toolbar .tabs button.selected{background:var(--accent-dim)}
+[data-design=luma] .search-row{border:0;border-radius:30px;padding:13px 18px;background:var(--surface);margin:18px 0 22px}
+[data-design=luma] .list-head{display:none}
+[data-design=luma] .device-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+[data-design=luma] .device-row{display:grid;grid-template-columns:1fr auto;grid-template-rows:auto auto auto auto;gap:18px 8px;align-content:start;min-height:270px;margin:0;padding:23px;border:1px solid transparent;border-radius:30px;background:var(--surface);box-shadow:0 12px 40px #37215008;position:relative}
+[data-design=luma] .device-row.selected{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-dim);background:var(--surface)}
+[data-design=luma] .device-row:hover{transform:translateY(-2px);transition:transform .2s}
+[data-design=luma] .device-icon{grid-column:1;grid-row:1;width:57px;height:57px;border-radius:22px;background:linear-gradient(135deg,var(--accent-dim),var(--surface-hover));border:0;box-shadow:6px 6px 0 var(--bg);transform:rotate(-6deg)}
+[data-design=luma] .device-icon svg{transform:rotate(6deg);width:26px;height:26px}
+[data-design=luma] .device-name{grid-column:1/-1;grid-row:2}
+[data-design=luma] .device-name strong{font-size:22px;font-weight:450;letter-spacing:-.6px}
+[data-design=luma] .device-name>span{font-size:11px;display:flex;flex-wrap:wrap;line-height:1.7;margin-top:7px}
+[data-design=luma] .device-row>.badge{grid-column:2;grid-row:1;align-self:start;justify-self:end;font-size:9px;border:0;border-radius:30px;max-width:120px}
+[data-design=luma] .device-card-facts{grid-row:3;grid-column:1/-1;font-size:10px;gap:10px}
+[data-design=luma] .connect-small{grid-row:4;grid-column:1/-1;width:100%;margin:0;border:0;border-top:1px solid var(--border);border-radius:0;justify-content:space-between;padding:14px 0 0;background:transparent;font-size:12px;color:var(--accent)}
+[data-design=luma] .connect-small>svg:first-child{display:block}
+[data-design=luma] .details{border:0;border-radius:35px;background:var(--surface);padding:25px;align-self:start;box-shadow:var(--shadow)}
+[data-design=luma] .details .device-illustration{height:125px;margin:20px 0 25px;border-radius:70px;background:linear-gradient(145deg,var(--accent-dim),var(--panel));overflow:hidden}
+[data-design=luma] .details .tower{transform:scale(.7)}
+[data-design=luma] .detail-name h2{font-size:29px;font-weight:400}
+[data-design=luma] .details .detail-grid{border-top:1px solid var(--border);padding-top:22px}
+[data-design=luma] .workflow-note{background:none;border:0;border-top:1px solid var(--border);padding:24px 5px;border-radius:0}
+[data-design=luma] .activity-preview{padding:0 5px}
+[data-design=luma] .work-card,[data-design=luma] .settings-card{border:0;border-radius:32px;background:var(--surface)}
+[data-design=luma] .work-card input:not([type=checkbox]):not([type=color]),[data-design=luma] .work-card select{border-radius:25px;padding-left:16px}
+[data-design=luma] .work-row{padding:19px 5px}
+
+@media(min-width:851px){
+ [data-design=luma] .app-shell>.sidebar{position:sticky;inset:14px 24px auto;width:calc(100% - 48px);height:auto;min-height:112px;margin:14px 24px 0;padding:16px 24px 10px;display:grid;grid-template-columns:240px 1fr 95px;grid-template-rows:42px 42px;gap:9px 12px;z-index:30;background:var(--surface);border:1px solid var(--border);border-radius:26px;box-shadow:var(--shadow);overflow:visible}
+ [data-design=luma] .app-shell{display:block}
+ [data-design=luma] .sidebar .brand{margin:0;align-self:start}
+ [data-design=luma] .sidebar>.workspace{grid-column:2;grid-row:1;justify-self:end;width:210px;padding:5px 10px;margin:0;height:39px;border:0;background:none}
+ [data-design=luma] .sidebar>.nav-label,[data-design=luma] .sidebar>.group-link,[data-design=luma] .sidebar-bottom .local-note{display:none}
+ [data-design=luma] .sidebar nav{grid-column:1/-1;grid-row:2;display:flex;flex-direction:row;gap:2px;overflow-x:auto;justify-content:space-between;scrollbar-width:thin;min-width:0}
+ [data-design=luma] .sidebar nav button{flex-shrink:0;min-height:35px;padding:7px 11px;gap:7px;font-size:11px;border-radius:25px;white-space:nowrap}
+ [data-design=luma] .sidebar nav button svg{width:15px;height:15px}
+ [data-design=luma] .sidebar-bottom{grid-column:3;grid-row:1;padding:0;margin:0;background:none}
+ [data-design=luma] .sidebar-footer{height:39px;padding:0;justify-content:end;border:0}
+ [data-design=luma] .sidebar-footer>span{display:none}
+ [data-design=luma] .app-shell>main{margin:0;width:100%}
+ [data-design=luma] .topbar{height:58px;border:0;width:100%;max-width:1516px;margin:auto}
+ [data-design=luma] .page-content{max-width:1516px;padding-top:15px}
+}
+
+/* Orbit — precise instrument panel, left inspector and a dense machine table. */
+[data-design=orbit] .app-shell{background-image:linear-gradient(var(--halo) 1px,transparent 1px),linear-gradient(90deg,var(--halo) 1px,transparent 1px);background-size:32px 32px}
+[data-design=orbit] .topbar{height:58px;background:var(--sidebar);border-bottom:1px solid var(--border)}
+[data-design=orbit] .fleet-page>.page-heading{border-bottom:1px solid var(--border);padding:8px 0 24px;margin-bottom:0}
+[data-design=orbit] .fleet-page h1{font-size:clamp(27px,calc(2.8vw / var(--ui-scale, 1)),38px);letter-spacing:-1.4px}
+[data-design=orbit] .fleet-page .eyebrow{font:10px ui-monospace,monospace;letter-spacing:1.8px}
+[data-design=orbit] .metrics{gap:1px;background:var(--border);border:1px solid var(--border);border-top:0;border-radius:0;margin-bottom:26px}
+[data-design=orbit] .metric{padding:15px 20px;border:0;border-radius:0;box-shadow:none;background:var(--panel);min-height:0}
+[data-design=orbit] .metric>span{font:10px ui-monospace,monospace;text-transform:uppercase;letter-spacing:.5px}
+[data-design=orbit] .metric>strong{font:28px ui-monospace,monospace;margin:13px 0 5px;letter-spacing:-1px}
+[data-design=orbit] .metric small{font-size:9px}
+[data-design=orbit] .metric:after{display:none}
+[data-design=orbit] .devices-layout{grid-template-columns:285px minmax(0,1fr);gap:24px;align-items:start}
+[data-design=orbit] .details{grid-column:1;grid-row:1;background:var(--panel);border:1px solid var(--border);border-radius:0;padding:20px;border-top:2px solid var(--accent);box-shadow:none}
+[data-design=orbit] .device-section{grid-column:2;grid-row:1;min-width:0}
+[data-design=orbit] .details .device-illustration{height:125px;border:1px solid var(--border);border-radius:0;margin:20px 0;overflow:hidden;background-size:10px 10px}
+[data-design=orbit] .details .tower{transform:scale(.68)}
+[data-design=orbit] .details .detail-name h2{font-size:23px}
+[data-design=orbit] .detail-name>span,[data-design=orbit] .detail-grid strong{font-family:ui-monospace,monospace;font-size:11px}
+[data-design=orbit] .details .certificate-card{border-radius:0;padding:12px}
+[data-design=orbit] .button,[data-design=orbit] .work-card,[data-design=orbit] .settings-card,[data-design=orbit] .media-item{border-radius:3px;box-shadow:none}
+[data-design=orbit] .work-card{border-top:2px solid var(--accent)}
+[data-design=orbit] .work-card input:not([type=checkbox]):not([type=color]),[data-design=orbit] .work-card select{border-radius:2px;font-family:ui-monospace,monospace}
+[data-design=orbit] .section-toolbar{min-height:40px;border:1px solid var(--border);background:var(--sidebar);padding:3px 8px}
+[data-design=orbit] .section-toolbar .tabs{gap:8px}
+[data-design=orbit] .section-toolbar .tabs button{font:10px ui-monospace,monospace;text-transform:uppercase;padding:12px 9px;letter-spacing:.3px}
+[data-design=orbit] .search-row{border-radius:0;padding:11px 13px;margin:12px 0;background:var(--panel)}
+[data-design=orbit] .search-row input{font:11px ui-monospace,monospace}
+[data-design=orbit] .list-head{padding:14px 12px;border:1px solid var(--border);background:var(--sidebar);font:9px ui-monospace,monospace;letter-spacing:1.5px}
+[data-design=orbit] .device-list{display:block;border:1px solid var(--border);border-top:0}
+[data-design=orbit] .device-row{display:grid;grid-template-columns:24px minmax(130px,1fr) 90px 84px;gap:8px;min-height:84px;margin:0;padding:13px 12px;border:0;border-radius:0;background:var(--panel);box-shadow:none}
+[data-design=orbit] .device-row+.device-row{border-top:1px solid var(--border)}
+[data-design=orbit] .device-row.selected{background:var(--surface-hover);box-shadow:inset 2px 0 var(--accent)}
+[data-design=orbit] .device-row>.device-icon{display:none}
+[data-design=orbit] .device-index{grid-column:1;grid-row:1/3}
+[data-design=orbit] .device-row>.device-name{grid-column:2;grid-row:1/3}
+[data-design=orbit] .device-name strong{font-size:14px;font-weight:500}
+[data-design=orbit] .device-name>span{font:10px ui-monospace,monospace;display:flex;flex-wrap:wrap;line-height:1.8}
+[data-design=orbit] .device-row>.badge{grid-column:3;grid-row:1;border-radius:0;font-size:9px;justify-self:start}
+[data-design=orbit] .device-pin-state{grid-column:3;grid-row:2;font-size:8px}
+[data-design=orbit] .connect-small{grid-column:4;grid-row:1/3;justify-self:end;margin:0;border-radius:2px;font:10px ui-monospace,monospace;padding:8px}
+[data-design=orbit] .workflow-note{border-radius:0;background:var(--sidebar);border:1px solid var(--border);padding:18px;margin-top:24px}
+[data-design=orbit] .workflow-note h3{font-size:12px;font-weight:500}
+[data-design=orbit] .workflow-note p{font-size:10px}
+[data-design=orbit] .activity-preview{border-top:1px solid var(--border);margin-top:25px;padding-top:8px}
+[data-design=orbit] .activity-line{font-size:11px;border-bottom:1px dashed var(--border)}
+
+@media(min-width:851px) and (max-width:1100px){
+ :root[data-design=orbit]{--sidebar-width:90px}
+ [data-design=orbit] .sidebar{padding:22px 9px 0}
+ [data-design=orbit] .sidebar .brand{margin:0 auto 22px;justify-content:center}
+ [data-design=orbit] .sidebar .brand>span,[data-design=orbit] .sidebar>.workspace,[data-design=orbit] .sidebar>.nav-label,[data-design=orbit] .sidebar>.group-link,[data-design=orbit] .sidebar-footer>span,[data-design=orbit] .local-note{display:none}
+ [data-design=orbit] .sidebar nav button{flex-direction:column;gap:6px;font-size:8px;min-height:54px;padding:8px 3px;position:relative}
+ [data-design=orbit] .nav-count{position:absolute;right:2px;top:0}
+ [data-design=orbit] .sidebar-footer{flex-wrap:wrap;justify-content:center}
+ [data-design=orbit] .devices-layout{grid-template-columns:245px minmax(0,1fr);gap:17px}
+ [data-design=orbit] .page-content{padding:25px}
+ [data-design=orbit] .device-row{grid-template-columns:18px minmax(90px,1fr) 82px;gap:7px}
+ [data-design=orbit] .device-row>.device-name{grid-column:2;grid-row:1/3}
+ [data-design=orbit] .device-row>.badge{grid-column:3;grid-row:1}
+ [data-design=orbit] .device-pin-state{grid-column:2;grid-row:3}
+ [data-design=orbit] .connect-small{grid-column:3;grid-row:2/4}
+ [data-design=luma] .devices-layout{grid-template-columns:minmax(0,1fr) 260px;gap:20px}
+ [data-design=luma] .device-row{padding:17px}
+ [data-design=luma] .device-name strong{font-size:20px}
+}
+
+@media(max-width:850px){
+ [data-design=serein] .device-section{padding:12px;border-radius:22px}
+ [data-design=serein] .metric{padding:18px}
+ [data-design=serein] .metric:nth-child(3){border-left:0;border-top:1px solid var(--border)}
+ [data-design=serein] .metric:nth-child(4){border-top:1px solid var(--border)}
+ [data-design=serein] .details{border-radius:28px}
+ [data-design=serein] .device-row{padding:13px 8px}
+ /* Luma becomes an airy top dock instead of sharing the other styles' side rail. */
+ :root[data-design=luma]{--sidebar-width:0px}
+ [data-design=luma] .app-shell{display:block}
+ [data-design=luma] .app-shell>.sidebar{position:sticky;top:8px;inset-inline:10px;width:calc(100% - 20px);height:auto;margin:8px 10px 0;padding:10px 13px 5px;display:grid;grid-template-columns:1fr auto;grid-template-rows:34px 53px;gap:7px;z-index:30;border:1px solid var(--border);border-radius:22px;background:var(--surface);box-shadow:var(--shadow)}
+ [data-design=luma] .sidebar .brand{margin:0;justify-content:start;gap:9px}
+ [data-design=luma] .sidebar .brand>span{display:block;font-size:21px}
+ [data-design=luma] .sidebar .brand small{display:none}
+ [data-design=luma] .sidebar .brand-mark{width:30px;height:30px}
+ [data-design=luma] .sidebar nav{grid-column:1/-1;grid-row:2;flex-direction:row;gap:5px;overflow-x:auto;min-width:0;scrollbar-width:thin}
+ [data-design=luma] .sidebar nav button{flex:0 0 auto;min-height:43px;padding:5px 10px;font-size:8px;gap:4px;border-radius:12px;position:relative}
+ [data-design=luma] .sidebar nav button svg{height:15px;width:15px}
+ [data-design=luma] .sidebar .nav-count{right:0;top:0;font-size:7px}
+ [data-design=luma] .sidebar-bottom{grid-column:2;grid-row:1;background:none;padding:0;margin:0}
+ [data-design=luma] .sidebar-footer{height:34px;padding:0;flex-wrap:nowrap}
+ [data-design=luma] .app-shell>main{width:100%;margin:0}
+ [data-design=luma] .topbar{height:48px;border:0}
+ [data-design=luma] .fleet-page>.page-heading{padding:4px 0 8px;gap:20px}
+ [data-design=luma] .page-content{padding:22px}
+ [data-design=luma] .fleet-page h1{font-size:38px}
+ [data-design=luma] .metrics{margin-bottom:22px;padding-bottom:18px}
+ [data-design=luma] .metric{padding:0 10px}
+ [data-design=luma] .metric>strong{font-size:26px}
+ [data-design=luma] .metric>.tls-value{font-size:22px;padding-top:5px}
+ [data-design=luma] .metric>span{font-size:9px}
+ [data-design=luma] .devices-layout{grid-template-columns:minmax(0,1fr)}
+ [data-design=luma] .details .device-illustration{display:none}
+ [data-design=luma] .device-row{padding:20px;min-height:245px}
+ [data-design=luma] .device-row>.device-icon{grid-column:1;grid-row:1}
+ [data-design=luma] .device-row>.device-name{grid-column:1/-1;grid-row:2}
+ [data-design=orbit] .page-content{padding:24px 17px}
+ [data-design=orbit] .devices-layout{grid-template-columns:minmax(0,1fr)}
+ [data-design=orbit] .device-section{grid-column:1;grid-row:1}
+ [data-design=orbit] .details{grid-column:1;grid-row:2}
+ [data-design=orbit] .metric{padding:12px}
+ [data-design=orbit] .metric>span{font-size:9px}
+ [data-design=orbit] .metric>strong{font-size:24px}
+}
+
+@media(max-width:520px){
+ [data-design=serein] .device-row>.device-icon{width:32px;height:32px}
+ [data-design=serein] .device-row{grid-template-columns:32px minmax(0,1fr) auto;gap:7px}
+ [data-design=serein] .device-row>.device-name{grid-column:2/-1}
+ [data-design=serein] .device-name>span{display:flex;flex-wrap:wrap;line-height:1.8}
+ [data-design=serein] .connect-small{padding:7px;font-size:10px}
+ [data-design=serein] .metric{padding:14px}
+ [data-design=serein] .metric>strong{font-size:29px}
+ [data-design=serein] .workflow-note .note-symbol{display:none}
+ [data-design=luma] .device-list{grid-template-columns:minmax(0,1fr)}
+ [data-design=luma] .device-row{min-height:240px;grid-template-columns:1fr auto;padding:23px}
+ [data-design=luma] .device-name strong{font-size:25px}
+ [data-design=luma] .device-row>.badge{grid-column:2;grid-row:1}
+ [data-design=luma] .connect-small{grid-column:1/-1;grid-row:4}
+ [data-design=luma] .device-card-facts{grid-column:1/-1;grid-row:3}
+ [data-design=luma] .fleet-page h1{font-size:37px}
+ [data-design=luma] .page-heading .button{min-height:40px;font-size:11px}
+ [data-design=luma] .metric>span{font-size:8px;line-height:1.5}
+ [data-design=luma] .metric>strong{font-size:24px}
+ [data-design=luma] .metric>.tls-value{font-size:18px;padding-top:8px;white-space:nowrap}
+ [data-design=luma] .metric>.tls-value span{font-size:12px}
+ [data-design=luma] .section-toolbar .tabs button{padding:10px 12px;font-size:10px}
+ [data-design=orbit] .device-row{grid-template-columns:18px minmax(0,1fr) 64px;gap:8px 5px;padding:13px 9px}
+ [data-design=orbit] .device-index{grid-column:1;grid-row:1/3;font-size:9px}
+ [data-design=orbit] .device-row>.device-name{grid-column:2/-1;grid-row:1}
+ [data-design=orbit] .device-row>.badge{grid-column:2;grid-row:2}
+ [data-design=orbit] .device-pin-state{grid-column:2;grid-row:3;font-size:8px}
+ [data-design=orbit] .connect-small{grid-column:3;grid-row:2/4;font-size:9px;padding:7px 5px}
+ [data-design=orbit] .device-name>span{font-size:9px}
+ [data-design=orbit] .section-toolbar .tabs{gap:0;flex-wrap:wrap}
+ [data-design=orbit] .section-toolbar .tabs button{font-size:8px;padding:9px 5px;letter-spacing:0}
+ [data-design=orbit] .metric small{font-size:8px;line-height:1.6}
+ [data-design=orbit] .details{padding:17px}
+ [data-design=orbit] .device-row>.badge i{width:4px;height:4px}
+}
+@media(prefers-reduced-motion:reduce){[data-design=luma] .device-row:hover{transform:none}}
+
+/* Layout previews in the chooser mirror cards vs. rows and inspector position. */
+.design-mini.luma .mini-lower>div{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.design-mini.luma .mini-lower b{height:53px;margin:0;border-radius:10px;position:relative}
+.design-mini.luma .mini-lower b:before{content:'';position:absolute;top:8px;left:8px;width:14px;height:14px;border-radius:6px;background:var(--mini-accent);opacity:.5}
+.design-mini.luma .mini-lower b:last-child{display:none}
+.design-mini.luma .mini-lower aside{width:29%;border-radius:15px}
+.design-mini.luma .mini-metrics i{height:17px;background:none;border-radius:0;border-bottom:1px solid var(--mini-accent)}
+.design-mini.luma .mini-metrics i:before{top:2px;height:7px}
+.design-mini.orbit .mini-lower{flex-direction:row-reverse}
+.design-mini.orbit .mini-lower aside{width:34%;border-top:1px solid var(--mini-accent)}
+.design-mini.orbit .mini-lower b{height:12px;margin-bottom:3px;border-bottom:1px solid var(--mini-accent);opacity:.6}
+.design-mini.orbit .mini-metrics{gap:1px;border:1px solid var(--mini-surface)}
+.design-mini.orbit .mini-metrics i{height:23px;border-radius:0}
+/* Connection preferences and console controls in all three layouts. */
+.connection-preferences label{display:flex;flex-direction:column;gap:8px;margin-top:22px;font-weight:600}
+.connection-preferences select,.keyboard-select select{padding:10px 12px;border:1px solid var(--border);border-radius:10px;background:var(--surface);color:var(--text);font:inherit;max-width:100%}
+.connection-preferences select{width:min(100%,360px)}
+.connection-preferences p,.connection-preferences small{color:var(--muted);line-height:1.6}
+.keyboard-select{display:flex;align-items:center;gap:10px;margin-left:auto}
+.quality-toolbar{flex-wrap:wrap;gap:12px}
+.kvm-input-hint{padding:10px 16px;color:var(--muted);font-size:12px;line-height:1.5;border-bottom:1px solid var(--border)}
+.kvm-toolbar{flex-wrap:wrap;gap:10px}.kvm-toolbar>div{flex-wrap:wrap}
+.sol-open{margin-top:8px}.sol-session{margin-top:0;min-width:0}.sol-session .card-title{flex-wrap:wrap}
+.sol-help,.sol-summary{color:var(--muted);font-size:12px;line-height:1.6}.sol-summary{margin-top:12px}
+.sol-terminal{min-width:0;overflow:hidden}
+@media(max-width:650px){.keyboard-select{margin-left:0;width:100%;flex-wrap:wrap}.keyboard-select select{min-width:0}.quality-toolbar small{margin-left:0}.sol-session{padding:14px}}
