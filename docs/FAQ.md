@@ -44,6 +44,14 @@ Uploading alone does not activate redirection or select the boot source. Connect
 
 Check the image SHA-256 against its publisher's checksum. For an error such as “USB3 failed”, capture the exact text and boot stage, AMT/BIOS version, image filename, and any `mediaProtocol` activity entries. Those entries record the firmware error code, last SCSI opcode and bytes read. The message alone does not establish a USB 3 hardware defect. Remove device addresses and usernames before filing a public issue.
 
+For ISO images, **USB-R-Kompatibilität für Linux** supplies an additional empty, read-only 1.44 MB virtual floppy. Some AMT USB-R firmware repeatedly resets its storage devices when Linux probes the unused floppy with no medium present. The compatibility drive is generated in memory: it contains no host files, has no filesystem or installer, and rejects writes. The browser enables this option by default for ISO connections; it can be unchecked. IMG connections continue to expose the selected IMG file. Media sessions also send protocol keepalives during read pauses.
+
+### MS-02 Ultra: repeated PCIe ACS/AER errors during Linux boot
+
+This is separate from USB storage probing. A [hardware investigation](https://github.com/kasa-consulting/kasa-testing-public/blob/main/hardware/ms-02-ultra/thunderbolt5/2026-09-09/upstream-comment.md) reproduced a runtime power-management problem at root port `0000:80:1b.4` on the MS-02 Ultra. If the same port and error pattern appear, a diagnostic boot with `pcie_port_pm=off` can help isolate it.
+
+In GRUB, select the Ubuntu entry and press **e**. Add `pcie_port_pm=off` to the `linux` line before `---`, then press **F10** to boot. Use **Englisch · US** in the KVM keyboard selector while editing a US-layout bootloader. This change applies only to that boot; AMT Studio does not modify the ISO, firmware or installed system. The parameter disables runtime power management for all PCIe ports for that boot, so it is a workaround with a power-use tradeoff, not a firmware repair. See the [kernel parameter reference](https://www.kernel.org/doc/html/latest/admin-guide/kernel-parameters.html).
+
 ## How do virtual media work?
 
 AMT images live in the teamserver's **Medien** library and are served read-only via storage redirection. JetKVM has its own **Medien** panel in the console: upload to its storage, select an existing file, or provide an HTTP/HTTPS URL. URL sources must support HTTP Range requests and be reachable from JetKVM. See the [official JetKVM media guide](https://jetkvm.com/docs/peripheral-devices/mount-drive).

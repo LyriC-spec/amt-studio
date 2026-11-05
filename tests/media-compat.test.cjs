@@ -5,7 +5,7 @@ const os = require('node:os');
 const path = require('node:path');
 const { Worker } = require('node:worker_threads');
 
-async function media(t, { kind = 'iso', size = 8192, mode = 'now', marker } = {}) {
+async function media(t, { kind = 'iso', size = 8192, mode = 'now', marker, usbCompatibility = false } = {}) {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'amt-media-compat-'));
   const file = path.join(dir, 'image.' + kind);
   const fd = fs.openSync(file, 'w');
@@ -13,7 +13,7 @@ async function media(t, { kind = 'iso', size = 8192, mode = 'now', marker } = {}
   if (marker) fs.writeSync(fd, marker.data, 0, marker.data.length, marker.offset);
   fs.closeSync(fd);
   const worker = new Worker(path.join(__dirname, '../electron/media-worker.cjs'), {
-    workerData: { file, size, kind, mode }
+    workerData: { file, size, kind, mode, usbCompatibility }
   });
   t.after(async () => { await worker.terminate(); fs.rmSync(dir, { recursive: true, force: true }); });
   const messages = [];
@@ -26,8 +26,8 @@ async function media(t, { kind = 'iso', size = 8192, mode = 'now', marker } = {}
     }
     messages.push(m);
   });
-  async function next(predicate) {
-    const deadline = Date.now() + 5000;
+  async function next(predicate, timeout = 5000) {
+    const deadline = Date.now() + timeout;
     while (Date.now() < deadline) {
       if (failure) throw failure;
       const index = messages.findIndex(predicate);
@@ -39,11 +39,13 @@ async function media(t, { kind = 'iso', size = 8192, mode = 'now', marker } = {}
   const packet = async command => (await next(m => m.type === 'send' && m.data[0] === command)).data;
   let seq = 0;
   function send(data) { data.writeUInt32LE(seq++, 4); worker.postMessage({ type: 'data', data }); }
-  function scsi(command, { dev = kind === 'iso' ? 0xb0 : 0xa0, allocation = 0, track = 0, format = 0, msf = false, lba = 0, count = 0 } = {}) {
+  function scsi(command, { dev = kind === 'iso' ? 0xb0 : 0xa0, allocation = 0, track = 0, format = 0, msf = false, lba = 0, count = 0, addressType = 1, dataType = 0 } = {}) {
     const b = Buffer.alloc(28);
     b[0] = 0x50; b[14] = dev & 0x10; b[16] = command;
     if (command === 0x28) { b.writeUInt32BE(lba, 18); b.writeUInt16BE(count, 23); }
+    else if (command === 0x52) { b[17] = addressType; b.writeUInt32BE(lba, 18); b.writeUInt16BE(allocation, 23); }
     else { b[17] = msf ? 2 : 0; b[18] = format; b[22] = track; b.writeUInt16BE(allocation, 23); }
+    if (command === 0x51) b[17] = dataType;
     send(b);
   }
   await packet(0x40);
@@ -128,6 +130,114 @@ test('Firmware media errors are observable and bounded without stopping the stre
   for (let i = 1; i <= 5; i++) {
     const diagnostic = await m.next(message => message.type === 'diagnostic');
     assert.deepEqual(diagnostic, { type: 'diagnostic', code: 3, lastOpcode: 0x25, bytesRead: 0, protocolErrors: i });
+  }
+  m.scsi(0x28, { lba: 0, count: 1 });
+  assert.equal((await m.packet(0x54)).subarray(34).length, 2048);
+});
+
+test('Linux optical probing gets disc information, including its two-byte length probe', async t => {
+  const m = await media(t);
+  m.scsi(0x51, { allocation: 2 });
+  assert.deepEqual((await m.packet(0x54)).subarray(34), Buffer.from([0, 32]));
+  m.scsi(0x51, { allocation: 34 });
+  const info = (await m.packet(0x54)).subarray(34);
+  assert.equal(info.length, 34);
+  assert.equal(info[2] & 0x1f, 0x0e); // Finalized, complete session, not erasable.
+  assert.deepEqual([...info.subarray(3, 7)], [1, 1, 1, 1]);
+  m.scsi(0x51, { allocation: 0 });
+  assert.equal((await m.packet(0x51))[20], 0xc5);
+  m.scsi(0x51, { allocation: 34, dataType: 1 });
+  assert.equal((await m.packet(0x51))[29], 0x24);
+});
+
+test('Track information reports the complete read-only image to Linux size probes', async t => {
+  const sectors = 1500000;
+  const m = await media(t, { size: sectors * 2048 });
+  m.scsi(0x52, { allocation: 8, lba: 1 });
+  const header = (await m.packet(0x54)).subarray(34);
+  assert.equal(header.length, 8);
+  assert.equal(header.readUInt16BE(0), 34);
+  assert.deepEqual([...header.subarray(2)], [1, 1, 0, 4, 1, 2]);
+  m.scsi(0x52, { allocation: 32, lba: 1 });
+  const track = (await m.packet(0x54)).subarray(34);
+  assert.equal(track.length, 32);
+  assert.equal(track.readUInt32BE(8), 0);
+  assert.equal(track.readUInt32BE(24), sectors);
+  assert.equal(track.readUInt32BE(28), sectors - 1);
+  m.scsi(0x52, { allocation: 36, addressType: 0, lba: sectors - 1 });
+  assert.equal((await m.packet(0x54)).subarray(34).length, 36);
+  m.scsi(0x52, { allocation: 36, lba: 2 });
+  assert.equal((await m.packet(0x51))[29], 0x24);
+  m.scsi(0x52, { allocation: 36, addressType: 0, lba: sectors });
+  assert.equal((await m.packet(0x51))[29], 0x24);
+});
+
+test('Optical information rejects an absent disc or an incompatible drive', async t => {
+  const m = await media(t, { kind: 'img' });
+  for (const op of [0x51, 0x52]) {
+    m.scsi(op, { dev: 0xb0, allocation: 36, lba: 1 });
+    const absent = await m.packet(0x51);
+    assert.equal(absent[28], 2); assert.equal(absent[29], 0x3a);
+    m.scsi(op, { dev: 0xa0, allocation: 36, lba: 1 });
+    assert.equal((await m.packet(0x51))[29], 0x20);
+  }
+});
+
+test('DVD-size ISO accepts the Linux MSF lead-out probe while preserving full LBA capacity', async t => {
+  const sectors = 1500000;
+  const m = await media(t, { size: sectors * 2048 });
+  m.scsi(0x43, { allocation: 12, track: 0xaa, msf: true });
+  const toc = (await m.packet(0x54)).subarray(34);
+  assert.equal(toc.length, 12);
+  assert.equal(toc[6], 0xaa);
+  assert.deepEqual([...toc.subarray(8)], [0, 77, 22, 0]);
+  m.scsi(0x43, { allocation: 12, track: 0xaa });
+  assert.equal((await m.packet(0x54)).readUInt32BE(42), sectors);
+  m.scsi(0x25);
+  assert.equal((await m.packet(0x54)).readUInt32BE(34), sectors - 1);
+});
+
+test('Idle media sends a protocol ping and continues reading after the firmware pong', async t => {
+  const m = await media(t);
+  const ping = await m.next(message => message.type === 'send' && message.data[0] === 0x44, 15000);
+  assert.equal(ping.data.length, 8);
+  const pong = Buffer.alloc(8); pong[0] = 0x45;
+  m.send(pong);
+  m.scsi(0x28, { lba: 0, count: 1 });
+  assert.equal((await m.packet(0x54)).subarray(34).length, 2048);
+});
+
+test('USB-R companion reads only zeroes, bounds reads and rejects writes without exposing ISO bytes', async t => {
+  const iso = Buffer.alloc(2048, 0x6b);
+  const m = await media(t, { usbCompatibility: true, marker: { offset: 0, data: iso } });
+  m.scsi(0x25, { dev: 0xa0 });
+  const capacity = (await m.packet(0x54)).subarray(34);
+  assert.equal(capacity.readUInt32BE(0), 2879); assert.equal(capacity.readUInt32BE(4), 512);
+  m.scsi(0x28, { dev: 0xa0, lba: 0, count: 20 });
+  assert.deepEqual((await m.packet(0x54)).subarray(34), Buffer.alloc(8192));
+  assert.deepEqual((await m.packet(0x54)).subarray(34), Buffer.alloc(2048));
+  m.scsi(0x28, { dev: 0xa0, lba: 2879, count: 1 });
+  assert.deepEqual((await m.packet(0x54)).subarray(34), Buffer.alloc(512));
+  m.scsi(0x28, { dev: 0xa0, lba: 2880, count: 1 });
+  assert.equal((await m.packet(0x51))[29], 0x21);
+  m.scsi(0x2a, { dev: 0xa0 });
+  const denied = await m.packet(0x51);
+  assert.equal(denied[28], 7); assert.equal(denied[29], 0x27);
+  m.scsi(0x28, { lba: 0, count: 1 });
+  assert.deepEqual((await m.packet(0x54)).subarray(34), iso);
+});
+
+test('Mode sense bounds short Linux probes and marks virtual media write protected', async t => {
+  const m = await media(t, { usbCompatibility: true });
+  for (const dev of [0xa0, 0xb0]) {
+    for (const allocation of [4, 8]) {
+      m.scsi(0x5a, { dev, allocation, format: 0x3f });
+      const data = (await m.packet(0x54)).subarray(34);
+      assert.equal(data.length, allocation);
+      assert.equal(data[3] & 0x80, 0x80);
+    }
+    m.scsi(0x5a, { dev, allocation: 0, format: 0x3f });
+    assert.equal((await m.packet(0x51))[20], 0xc5);
   }
   m.scsi(0x28, { lba: 0, count: 1 });
   assert.equal((await m.packet(0x54)).subarray(34).length, 2048);
