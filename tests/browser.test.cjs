@@ -19,3 +19,29 @@ test('Browser WebSockets reject foreign origins and isolate two tab connections'
  const sockets=[];const connect=(source,client)=>new Promise((resolve,reject)=>{const socket=new WebSocket(`ws://127.0.0.1:${address.port}/api/events?client=${client}`,{headers:{Cookie:'amt-session='+token,Origin:source}});socket.once('error',reject);socket.once('message',data=>{sockets.push(socket);resolve(JSON.parse(data.toString()))})});
  await assert.rejects(connect('https://attacker.invalid',randomUUID()));assert.equal((await connect(origin,randomUUID())).type,'connected');assert.equal((await connect(origin,randomUUID())).type,'connected');assert.ok(sockets.every(socket=>socket.readyState===WebSocket.OPEN));service.identity.logout(token);await new Promise(resolve=>setTimeout(resolve,30));assert.ok(sockets.every(socket=>socket.readyState!==WebSocket.OPEN));
 });
+
+test('Missing WebSocket pongs release orphaned sessions without disconnecting a healthy tab',{timeout:60000},async t=>{
+ t.mock.timers.enable({apis:['setInterval']});
+ const directory=fs.mkdtempSync(path.join(os.tmpdir(),'amt-orphan-')),service=createServer({directory});
+ const address=await service.listen(0),origin=`http://127.0.0.1:${address.port}`,sockets=[];
+ t.after(async()=>{for(const ws of sockets)ws.terminate();await service.close();fs.rmSync(directory,{recursive:true,force:true})});
+ await service.identity.setup(fs.readFileSync(service.identity.setupFile,'utf8'),'admin','browser-test-password');
+ const {token}=await service.identity.login('admin','browser-test-password'),deadClient=randomUUID(),liveClient=randomUUID();
+ const connect=(client,autoPong=true)=>new Promise((resolve,reject)=>{
+  const ws=new WebSocket(`ws://127.0.0.1:${address.port}/api/events?client=${client}`,{autoPong,headers:{Cookie:'amt-session='+token,Origin:origin}});
+  sockets.push(ws);ws.once('error',reject);ws.once('message',()=>resolve(ws));
+ });
+ const dead=await connect(deadClient,false),live=await connect(liveClient),closed=[];
+ // Controller-owned redirections with no frame traffic still need to be closed.
+ for(const [id,client]of [['dead-kvm',deadClient],['live-kvm',liveClient]])service.controller.sessions.set(id,{
+  owner:service.identity.tokenKey(token)+'/'+client,session:{close(){closed.push(id);service.controller.sessions.delete(id)}}
+ });
+ const pinged=new Promise(resolve=>live.once('ping',resolve));t.mock.timers.tick(30000);await pinged;
+ // Drain the real local WebSocket pong while only interval scheduling is mocked.
+ await new Promise(resolve=>setTimeout(resolve,100));
+ const disconnected=new Promise(resolve=>dead.once('close',resolve));t.mock.timers.tick(30000);await disconnected;
+ assert.deepEqual(closed,['dead-kvm']);assert.equal(live.readyState,WebSocket.OPEN);
+ assert.equal(service.controller.sessions.has('dead-kvm'),false);assert.equal(service.controller.sessions.has('live-kvm'),true);
+ const replacement=await connect(deadClient);assert.equal(replacement.readyState,WebSocket.OPEN);
+ assert.equal(service.controller.sessions.has('live-kvm'),true);
+});

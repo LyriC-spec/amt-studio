@@ -12,6 +12,7 @@ export function Kvm({ session, active, onClose }) {
   const {keyboardLayout,setKeyboardLayout}=usePreferences();
   const canvas = useRef(null), surface = useRef(null), controller = useRef(null);
   const keyboard=useRef(null);
+  const pendingStop=useRef(Promise.resolve({ok:true}));
   if(!keyboard.current)keyboard.current=new KvmKeyboard(bytes=>controller.current?.sendBytes(bytes));
   const [keyboardHint,setKeyboardHint]=useState('');
   const [status, setStatus] = useState('connecting'), [error, setError] = useState('');
@@ -84,8 +85,15 @@ export function Kvm({ session, active, onClose }) {
       else if (event.type === 'closed') setStatus(old => old === 'error' ? old : 'closed');
     });
     updateTimer = setInterval(() => { if (!disposed) setReceived(bytesReceived); }, 1000);
-    void window.amt.startKvm(session.device.id, sessionId).then(result => { if (!result.ok && !disposed) { setError(result.error); setStatus('error'); } });
-    return () => { releaseInput(); disposed = true; unsubscribe(); clearInterval(updateTimer); void window.amt.stopKvm(sessionId); controller.current = null; };
+    // Reconnect and quality changes must wait for the previous server-side stop.
+    // A slow start may also finish after unmount; its cleanup must run afterwards.
+    const started = pendingStop.current.then(result => {
+      if (disposed) return;
+      if (result?.ok === false) throw new Error(result.error || 'Die vorherige Sitzung konnte nicht beendet werden.');
+      return window.amt.startKvm(session.device.id, sessionId);
+    }).then(result => { if (result && !result.ok && !disposed) { setError(result.error); setStatus('error'); } })
+      .catch(error => { if (!disposed) { setError(error.message); setStatus('error'); } });
+    return () => { releaseInput(); disposed = true; unsubscribe(); clearInterval(updateTimer); pendingStop.current = started.then(() => window.amt.stopKvm(sessionId)).catch(error => ({ok:false,error:error.message})); controller.current = null; };
   }, [session.id, generation, colorDepth]);
   function onKey(e, down) {
     if (!inputAllowed) return;

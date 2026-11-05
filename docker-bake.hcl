@@ -1,5 +1,5 @@
 variable "TAG" {
-  default = "amt-studio-web:0.3.0"
+  default = "amt-studio-web:0.3.1"
 }
 
 group "default" {

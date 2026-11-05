@@ -25,6 +25,7 @@ jobs:
           RELEASE_TAG: ${{ github.event.release.tag_name }}
         run: |
           [[ "$RELEASE_TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]] || exit 1
+          node -e 'if ("v" + require("./package.json").version !== process.env.RELEASE_TAG) process.exit(1)'
           echo "tag=${RELEASE_TAG#v}" >> "$GITHUB_OUTPUT"
       - uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6
         with:

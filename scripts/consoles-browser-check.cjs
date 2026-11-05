@@ -6,12 +6,12 @@ const root=path.join(__dirname,'..'),directory=fs.mkdtempSync(path.join(os.tmpdi
  page.on('pageerror',e=>errors.push(e.message));
  await page.addInitScript(()=>{
   const device={id:'11111111-1111-4111-8111-111111111111',name:'Console Test',host:'127.0.0.1',username:'admin',group:'Lab',permissions:['view','control','sol']},listeners=new Set(),sessions=new Map();
-  window.consoleTest={packets:[],starts:[],stops:[]};
+  window.consoleTest={packets:[],starts:[],stops:[],rejects:0,stopDelay:0,startDelay:0,completedStarts:0,activeKvm:()=>[...sessions.values()].filter(s=>s.protocol==='kvm').length,failKvm:()=>{for(const [id,s]of sessions)if(s.protocol==='kvm')emit(id,'error',{message:'Simulierter Verbindungsabbruch'})}};
   const emit=(sessionId,type,extra={})=>listeners.forEach(fn=>fn({sessionId,type,...extra}));
   const data=(id,bytes)=>queueMicrotask(()=>emit(id,'data',{data:new Uint8Array(bytes)}));
   window.amt={browser:true,onKvm:fn=>{listeners.add(fn);return()=>listeners.delete(fn)},list:async()=>({ok:true,data:{devices:[device],groups:[],user:{username:'tester',role:'admin'},encryptionAvailable:true}}),
-   startKvm:async(_,id)=>{sessions.set(id,{protocol:'kvm',stage:0});window.consoleTest.starts.push({id,protocol:'kvm'});queueMicrotask(()=>{emit(id,'ready');data(id,new TextEncoder().encode('RFB 003.008\n'))});return{ok:true}},
-   stopKvm:async id=>{sessions.delete(id);window.consoleTest.stops.push(id);return{ok:true}},
+   startKvm:async(_,id)=>{if([...sessions.values()].some(s=>s.protocol==='kvm')){window.consoleTest.rejects++;return{ok:false,error:'Sitzung bereits aktiv.'}}window.consoleTest.starts.push({id,protocol:'kvm'});await new Promise(resolve=>setTimeout(resolve,window.consoleTest.startDelay));sessions.set(id,{protocol:'kvm',stage:0});window.consoleTest.completedStarts++;queueMicrotask(()=>{emit(id,'ready');data(id,new TextEncoder().encode('RFB 003.008\n'))});return{ok:true}},
+   stopKvm:async id=>{await new Promise(resolve=>setTimeout(resolve,window.consoleTest.stopDelay));sessions.delete(id);window.consoleTest.stops.push(id);return{ok:true}},
    action:async(action,p={})=>{if(action==='startSol'){sessions.set(p.sessionId,{protocol:'sol'});window.consoleTest.starts.push({id:p.sessionId,protocol:'sol'});queueMicrotask(()=>{emit(p.sessionId,'ready');data(p.sessionId,new TextEncoder().encode('Serielle Testkonsole\r\n> '))})}if(action==='stopSession'){sessions.delete(p.sessionId);window.consoleTest.stops.push(p.sessionId)}return{ok:true,data:[]}},
    sendKvm:(id,bytes)=>{const session=sessions.get(id);if(!session)return;if(session.protocol==='sol'){window.consoleTest.packets.push({protocol:'sol',bytes:Array.from(bytes)});data(id,bytes);return}
     if(session.stage===0){session.stage=1;data(id,[1,1]);return}if(session.stage===1){session.stage=2;data(id,[0,0,0,0]);return}if(session.stage===2){session.stage=3;const init=new Uint8Array(24),v=new DataView(init.buffer);v.setUint16(0,640);v.setUint16(2,360);init.set([16,16,0,1,0,31,0,63,0,31,11,5,0,0,0,0],4);data(id,init);return}
@@ -37,8 +37,23 @@ const root=path.join(__dirname,'..'),directory=fs.mkdtempSync(path.join(os.tmpdi
   await page.getByRole('button',{name:'SOL trennen',exact:true}).click();assert.equal((await page.evaluate(()=>window.consoleTest.stops)).length,1);
   await page.locator('.session-tabs button').filter({hasText:'KVM'}).click();await page.screenshot({path:path.join(root,'artifacts/kvm-keyboard.png'),fullPage:true});
   for(const width of [1512,390]){await page.setViewportSize({width,height:1080});assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false,'KVM '+width)}
-  await page.getByRole('button',{name:'Verbindung trennen',exact:true}).click();assert.deepEqual(errors,[]);
-  const report={ok:true,emulatedTransport:true,viewOnlyBlocksInput:true,enableFocusesCanvas:true,germanKeyPackets:true,blurReleasesKeys:true,solSendReceive:true,solSurvivesNavigation:true,solCloseStopsSession:true,layouts:3,errors};fs.writeFileSync(path.join(root,'artifacts/consoles-browser-check.json'),JSON.stringify(report,null,2));console.log(JSON.stringify(report));
+  // Keep the server session reserved until a deliberately delayed stop finishes.
+  await page.evaluate(()=>{window.consoleTest.stopDelay=300;window.consoleTest.failKvm()});
+  await page.getByRole('button',{name:'Erneut verbinden',exact:true}).click();
+  await expect(page.locator('.kvm-status-text')).toHaveText('Verbunden');
+  assert.equal(await page.evaluate(()=>window.consoleTest.rejects),0);
+  await page.getByLabel('Farbtiefe',{exact:true}).selectOption('8');
+  await expect.poll(()=>page.evaluate(()=>window.consoleTest.starts.filter(s=>s.protocol==='kvm').length)).toBe(3);
+  await expect(page.locator('.kvm-status-text')).toHaveText('Verbunden');
+  assert.equal(await page.evaluate(()=>window.consoleTest.rejects),0);
+  await page.evaluate(()=>{window.consoleTest.startDelay=300;window.consoleTest.stopDelay=0});
+  await page.getByLabel('Farbtiefe',{exact:true}).selectOption('16');
+  await expect.poll(()=>page.evaluate(()=>window.consoleTest.starts.filter(s=>s.protocol==='kvm').length)).toBe(4);
+  await page.getByRole('button',{name:'Verbindung trennen',exact:true}).click();
+  await expect.poll(()=>page.evaluate(()=>window.consoleTest.completedStarts)).toBe(4);
+  await expect.poll(()=>page.evaluate(()=>window.consoleTest.activeKvm())).toBe(0);
+  assert.deepEqual(errors,[]);
+  const report={ok:true,emulatedTransport:true,viewOnlyBlocksInput:true,enableFocusesCanvas:true,germanKeyPackets:true,blurReleasesKeys:true,solSendReceive:true,solSurvivesNavigation:true,solCloseStopsSession:true,reconnectWaitsForStop:true,colorChangeWaitsForStop:true,lateStartCleanedUp:true,layouts:3,errors};fs.writeFileSync(path.join(root,'artifacts/consoles-browser-check.json'),JSON.stringify(report,null,2));console.log(JSON.stringify(report));
  }catch(error){await page.screenshot({path:path.join(root,'artifacts/consoles-ui-failure.png'),fullPage:true});console.error(error.message);process.exitCode=1}
  finally{await browser.close();await service.close();fs.rmSync(directory,{recursive:true,force:true})}
 })().catch(error=>{console.error(error.message);process.exitCode=1});

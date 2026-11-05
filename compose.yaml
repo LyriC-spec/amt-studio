@@ -1,7 +1,7 @@
 services:
   amt-studio:
     build: .
-    image: ${AMT_IMAGE:-amt-studio-web:0.3.0}
+    image: ${AMT_IMAGE:-amt-studio-web:0.3.1}
     restart: unless-stopped
     init: true
     ports:

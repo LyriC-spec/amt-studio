@@ -8,6 +8,8 @@ AMT media regression tests exercise next-boot activation flags, image-specific c
 
 Browser fixtures exercise login/status refresh, persisted settings, device editing, AMT KVM/SOL transport, JetKVM WebRTC video, keyboard and mouse packets, media workflows and ATX confirmations. They include actual browser WebRTC peers but a **simulated device**, not a remote physical computer. Confirmed ATX actions in these tests affect only the fixture.
 
+KVM reconnect tests deliberately retain the old device session while its stop request is delayed, then verify successful retry and color-depth changes without an overlapping start. A real local WebSocket test suppresses PONG replies in one tab and checks that its redirections are released while a healthy second tab remains connected. These tests reproduce cleanup scenarios, not the unknown network or firmware cause of a particular disconnection.
+
 Docker verification executes HTTP/session/snapshot/JetKVM integration tests inside each target architecture. CI builds both `linux/amd64` and `linux/arm64`; emulated architecture tests are not a substitute for physical hardware validation.
 
 ## Hardware observations from development
