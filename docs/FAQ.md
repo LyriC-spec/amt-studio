@@ -38,6 +38,12 @@ It enables compatibility with older AMT firmware lacking secure-renegotiation su
 
 The browser must reach the JetKVM directly over WebRTC, as well as reach AMT Studio. Check routing, VPN and firewall rules on both paths, and whether another client holds the device session. AMT Studio does not provide a TURN relay. Also check the HDMI input and target computer's video output.
 
+## Why does an AMT installation fail to boot from an image?
+
+Uploading alone does not activate redirection or select the boot source. Connect the ISO from **Medien**, keep that session open throughout installation, and select the one-time CD/DVD media boot in the AMT tools. The next-boot activation option waits for the next boot; it does not restart the target.
+
+Check the image SHA-256 against its publisher's checksum. For an error such as “USB3 failed”, capture the exact text and boot stage, AMT/BIOS version, image filename, and any `mediaProtocol` activity entries. Those entries record the firmware error code, last SCSI opcode and bytes read. The message alone does not establish a USB 3 hardware defect. Remove device addresses and usernames before filing a public issue.
+
 ## How do virtual media work?
 
 AMT images live in the teamserver's **Medien** library and are served read-only via storage redirection. JetKVM has its own **Medien** panel in the console: upload to its storage, select an existing file, or provide an HTTP/HTTPS URL. URL sources must support HTTP Range requests and be reachable from JetKVM. See the [official JetKVM media guide](https://jetkvm.com/docs/peripheral-devices/mount-drive).

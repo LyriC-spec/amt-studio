@@ -4,6 +4,8 @@
 
 The suite covers HTTP authentication, CSRF/origin enforcement, tab/session isolation, group permissions, credential encryption, certificate trust, snapshots, AMT redirection, keyboard encoding, read-only media sectors, JetKVM authentication and media-upload authorization/streaming. TLS tests create temporary certificates with OpenSSL.
 
+AMT media regression tests exercise next-boot activation flags, image-specific capacity, TOC lead-out/track selection and response lengths, medium-ready sense codes, firmware error reporting and exact reads across the 2 GiB boundary. These run in the ARM64 and AMD64 Docker verification stages too. They verify protocol responses with simulated firmware; they do not establish that a particular ISO boots on real hardware.
+
 Browser fixtures exercise login/status refresh, persisted settings, device editing, AMT KVM/SOL transport, JetKVM WebRTC video, keyboard and mouse packets, media workflows and ATX confirmations. They include actual browser WebRTC peers but a **simulated device**, not a remote physical computer. Confirmed ATX actions in these tests affect only the fixture.
 
 Docker verification executes HTTP/session/snapshot/JetKVM integration tests inside each target architecture. CI builds both `linux/amd64` and `linux/arm64`; emulated architecture tests are not a substitute for physical hardware validation.
