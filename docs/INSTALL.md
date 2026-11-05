@@ -84,6 +84,8 @@ Do not assume JetKVM video goes through the Docker server. No TURN relay, cloud 
 
 ## Updates and backups
 
+See the dedicated [update guide (German)](../UPDATE.md) for the 0.3.1 archive workflow, backups, version selection, verification and rollback.
+
 An update interrupts console sessions. Before changing versions, stop the container and back up the complete named `amt-data` volume plus `tls/` and `.env`. The volume contains device records, user hashes, `vault.key`, audit records and the AMT media library. **Devices without the matching vault key cannot have their saved passwords recovered.** Keep backups private and encrypted.
 
 For source builds, pull the intended revision and run `docker compose up -d --build`. For a release archive, verify its checksum, load it with `docker load`, set `AMT_IMAGE` if its version differs from the Compose default, then run `docker compose up -d --no-build --pull never`. Check the health status afterward. Restore backups only into a stopped instance; do not run two writers against the same data volume. `docker compose down -v` deletes the application data and must not be used as an update command.
